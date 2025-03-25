@@ -2,6 +2,7 @@ import { ChakraProvider, Box, CSSReset, extendTheme, Alert, AlertIcon, AlertTitl
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { FormCreator } from './components/FormCreator';
 import { FormResponse } from './components/FormResponse';
+import { FormPage } from './pages/FormPage';
 import { isSupabaseConfigured } from './lib/supabase';
 
 // Create a custom theme with some base styles
@@ -45,9 +46,8 @@ function App() {
           ) : (
             <Routes>
               <Route path="/" element={<FormCreator />} />
-              <Route path="/form/:id" element={
-                <FormResponse formId={window.location.pathname.split('/')[2]} />
-              } />
+              <Route path="/form/:formId" element={<FormPage />} />
+              <Route path="/response/:formId" element={<FormResponse />} />
             </Routes>
           )}
         </Box>

@@ -12,6 +12,7 @@ interface FormState {
   createForm: (form: Partial<Form>) => Promise<Form>;
   getForm: (id: string) => Promise<Form | null>;
   getResponses: (formId: string) => Promise<FormResponse[]>;
+  submitResponse: (formId: string, answers: { prompt_id: string; value: string }[]) => Promise<void>;
 }
 
 export const useFormStore = create<FormState>((set, get) => ({
@@ -87,6 +88,24 @@ export const useFormStore = create<FormState>((set, get) => ({
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
       return [];
+    }
+  },
+
+  submitResponse: async (formId, answers) => {
+    set({ loading: true });
+    try {
+      const { error } = await supabase
+        .from('form_responses')
+        .insert([{
+          form_id: formId,
+          answers: answers
+        }]);
+
+      if (error) throw error;
+      set({ loading: false });
+    } catch (error) {
+      set({ error: (error as Error).message, loading: false });
+      throw error;
     }
   },
 }));
